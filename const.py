@@ -1,0 +1,29 @@
+PACKET_SIZE = 16
+
+DATA_CMD_TEMPERATURE = 97
+DATA_CMD_DHT_TEMPERATURE_C = 100
+DATA_CMD_DHT_HUMIDITY = 101
+DATA_CMD_DHT_TEMPERATURE_F = 102
+DATA_CMD_DHT_HIC = 103
+DATA_CMD_DHT_HIF = 104
+
+DATA_CMD_PM = 65
+DATA_CMD_PM01 = 70
+DATA_CMD_PM25 = 71
+DATA_CMD_PM10 = 72
+
+DATA_CMD_FAILED_DHT = 110
+DATA_CMD_FAILED_PM = 111
+
+DATA_MAP = {
+    100: ["<f", "tc"],
+    101: ["<f", "hum"],
+    102: ["<f", "tf"],
+    103: ["<f", "hic"],
+    104: ["<f", "hif"],
+    70: ["<i", "pm01"],
+    71: ["<i", "pm25"],
+    72: ["<i", "pm10"]
+}
+
+REPORT_TIME = 60
