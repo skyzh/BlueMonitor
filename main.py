@@ -32,6 +32,9 @@ def establish():
             yield True
             break
 
+def report_error(level, message):
+    result = firebase.post('/error', { "level": level, "message": message, "time": time.time() })
+
 def report():
     data = { k: numpy.mean(v) for (k, v) in publish.items() }
     data["time"] = time.time()
@@ -58,8 +61,10 @@ def process(data):
         publish[__key].append(value)
     elif command_id == const.DATA_CMD_FAILED_DHT:
         logger.warning('failed to read dht data')
+        report_error(0, 'failed to read dht data')
     elif  command_id == const.DATA_CMD_FAILED_PM:
         logger.warning('failed to read pm data')
+        report_error(0, 'failed to read pm data')
 
 def retrive():
     lstReport = time.time()
@@ -67,19 +72,23 @@ def retrive():
         __data = arduino.read(const.PACKET_SIZE)
         if not verify(__data):
             logger.info('broken packet found, disconnected')
+            report_error(0, 'broken packet found, disconnected')
             break
         process(__data)
         if time.time() - lstReport > const.REPORT_TIME:
+            lstReport = time.time()
             report()
 
 def loop():
     while True:
+        report_error(1, 'establishing connection...')
         logger.info('establishing connection...')
         yield from establish()
         logger.info('connection established, retriving data...')
         yield from retrive()
 
 try:
+    report_error(1, 'program started')
     for i in loop():
         pass
 except KeyboardInterrupt:
