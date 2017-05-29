@@ -36,11 +36,13 @@ def report_error(level, message):
     result = firebase.post('/error', { "level": level, "message": message, "time": time.time() })
 
 def report():
-    data = { k: numpy.mean(v) for (k, v) in publish.items() }
+    data = { k: (numpy.mean(v) if len(v) > 0 else 0) for (k, v) in publish.items() }
     data["time"] = time.time()
     result = firebase.post('/data', data)
     for (k, v) in publish.items():
-        a[k] = []
+        if len(v) == 0:
+            report_error(0, 'no data for ' + k)
+        publish[k] = []
 
 def verify(data):
     content = data[:-2]
@@ -60,11 +62,9 @@ def process(data):
             publish[__key] = []
         publish[__key].append(value)
     elif command_id == const.DATA_CMD_FAILED_DHT:
-        logger.warning('failed to read dht data')
-        report_error(0, 'failed to read dht data')
-    elif  command_id == const.DATA_CMD_FAILED_PM:
-        logger.warning('failed to read pm data')
-        report_error(0, 'failed to read pm data')
+        logger.warning('fail to read dht data')
+    elif command_id == const.DATA_CMD_FAILED_PM:
+        logger.warning('fail to read pm data')
 
 def retrive():
     lstReport = time.time()
@@ -78,6 +78,7 @@ def retrive():
         if time.time() - lstReport > const.REPORT_TIME:
             lstReport = time.time()
             report()
+    yield True
 
 def loop():
     while True:
