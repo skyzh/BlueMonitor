@@ -40,7 +40,7 @@ def report():
     data["time"] = time.time()
     result = firebase.post('/data', data)
     for (k, v) in publish.items():
-        v = []
+        a[k] = []
 
 def verify(data):
     content = data[:-2]
