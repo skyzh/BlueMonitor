@@ -84,6 +84,7 @@ def loop():
         report_error(1, 'establishing connection...')
         logger.info('establishing connection...')
         yield from establish()
+        report_error(2, 'connection established, retriving data...')
         logger.info('connection established, retriving data...')
         yield from retrive()
 
