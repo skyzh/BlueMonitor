@@ -9,6 +9,8 @@ from config import config
 import const
 
 arduino = serial.Serial(config["serial"]["port"], config["serial"]["baudrate"])
+arduino.reset_input_buffer()
+arduino.reset_output_buffer()
 
 FORMAT = '%(asctime)-15s %(message)s'
 logging.basicConfig(format=FORMAT)
@@ -66,7 +68,7 @@ def process(data):
     elif command_id == const.DATA_CMD_FAILED_PM:
         logger.warning('fail to read pm data')
 
-def retrive():
+def retrieve():
     lstReport = time.time()
     while True:
         __data = arduino.read(const.PACKET_SIZE)
@@ -85,9 +87,9 @@ def loop():
         report_error(1, 'establishing connection...')
         logger.info('establishing connection...')
         yield from establish()
-        report_error(2, 'connection established, retriving data...')
-        logger.info('connection established, retriving data...')
-        yield from retrive()
+        report_error(2, 'connection established, retrieving data...')
+        logger.info('connection established, retrieving data...')
+        yield from retrieve()
 
 try:
     report_error(1, 'program started')
