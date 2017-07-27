@@ -44,11 +44,12 @@ def report():
     __doReport = True
     for (k, v) in publish.items():
         if len(v) == 0:
-            report_error(0, 'no data for ' + k)
             __doReport = False
         publish[k] = []
     if __doReport:
         result = firebase.post('/data', data)
+    else:
+        report_error(0, 'data collecting failed')
 
 def verify(data):
     content = data[:-2]
