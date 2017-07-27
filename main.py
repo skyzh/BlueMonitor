@@ -40,11 +40,14 @@ def report_error(level, message):
 def report():
     data = { k: (numpy.mean(v) if len(v) > 0 else 0) for (k, v) in publish.items() }
     data["time"] = time.time()
-    result = firebase.post('/data', data)
+    __doReport = True
     for (k, v) in publish.items():
         if len(v) == 0:
             report_error(0, 'no data for ' + k)
+            __doReport = False
         publish[k] = []
+    if __doReport:
+        result = firebase.post('/data', data)
 
 def verify(data):
     content = data[:-2]
