@@ -85,6 +85,7 @@ def retrieve():
         if time.time() - lstReport > const.REPORT_TIME:
             lstReport = time.time()
             report()
+        time.sleep(0.1)
     yield True
 
 def loop():
