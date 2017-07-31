@@ -4,12 +4,17 @@ import struct
 import logging
 import time
 import numpy
+import sys
 from firebase import firebase
 
 from config import config
 import const
-
-arduino = serial.Serial(config["serial"]["port"], config["serial"]["baudrate"], timeout=15)
+try:
+    arduino = serial.Serial(config["serial"]["port"], config["serial"]["baudrate"], timeout=15)
+except serial.SerialException:
+    report_error(0, 'serial disconnected')
+    sys.exit(1)
+    
 arduino.reset_input_buffer()
 arduino.reset_output_buffer()
 
@@ -24,7 +29,7 @@ firebase = firebase.FirebaseApplication('https://bluesense-9e31b.firebaseio.com/
 def establish():
     __zero_count = 0
     while True:
-        __data = arduino.read()
+         __data = arduino.read()
         if __data == b"\x00":
             __zero_count = __zero_count + 1
         else:
@@ -103,3 +108,7 @@ try:
         pass
 except KeyboardInterrupt:
     logger.info('user interrupt')
+except serial.SerialException:
+    report_error(0, 'serial disconnected')
+    logger.error('serial disconnected')
+    
