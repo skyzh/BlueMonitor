@@ -9,7 +9,7 @@ from firebase import firebase
 from config import config
 import const
 
-arduino = serial.Serial(config["serial"]["port"], config["serial"]["baudrate"])
+arduino = serial.Serial(config["serial"]["port"], config["serial"]["baudrate"], timeout=15)
 arduino.reset_input_buffer()
 arduino.reset_output_buffer()
 
